@@ -4,10 +4,26 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\EventRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     collectionOperations={"get", "post"},
+ *     itemOperations={
+ *          "get"={
+ *              "normalization_context"={"groups"={"events:read", "events:item:get"}},
+ *          },
+ *          "put",
+ *          "delete"
+ *     },
+ *     normalizationContext={"groups"={"events:read"}, "swagger_defintion_name"="Read"},
+ *     denormalizationContext={"groups"={"events:write"}, "swagger_defintion_name"="Write"},
+ *     shortName="events"
+ * )
  * @ORM\Entity(repositoryClass=EventRepository::class)
  */
 class Event
@@ -21,38 +37,73 @@ class Event
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"events:read", "events:write", "user:read", "user:write"})
+     * @Assert\Length(
+     *     min=2,
+     *     max=50,
+     *     maxMessage="Date and Time"
+     * )
      */
     private $Start;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"events:read", "events:write", "user:read", "user:write"})
+     * @Assert\Length(
+     *     min=2,
+     *     max=50,
+     *     maxMessage="Date and Time"
+     * )
      */
     private $End;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"events:read", "events:write", "user:read", "user:write"})
+     * @Assert\Length(
+     *     min=2,
+     *     max=50,
+     *     maxMessage="LastName, FristName"
+     * )
      */
     private $Title;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"events:read", "events:write", "user:read", "user:write"})
      */
     private $Content;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"events:read", "events:write", "user:read", "user:write"})
      */
     private $ContentFull;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"events:read", "events:write", "user:read", "user:write"})
      */
     private $Gender;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"events:read", "events:write", "user:read", "user:write"})
      */
     private $Email;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="events")
+     * @ORM\JoinColumn(nullable=false)
+     * @Groups({"events:read", "events:write"})
+     * @Assert\Valid()
+     */
+    private $owner;
+
+    public function __construct()
+    {
+        $this->owner = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -139,6 +190,32 @@ class Event
     public function setEmail(string $Email): self
     {
         $this->Email = $Email;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getOwner(): Collection
+    {
+        return $this->owner;
+    }
+
+    public function addOwner(User $owner): self
+    {
+        if (!$this->owner->contains($owner)) {
+            $this->owner[] = $owner;
+        }
+
+        return $this;
+    }
+
+    public function removeOwner(User $owner): self
+    {
+        if ($this->owner->contains($owner)) {
+            $this->owner->removeElement($owner);
+        }
 
         return $this;
     }
