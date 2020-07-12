@@ -12,7 +12,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SecurityController extends AbstractController
 {
-
     /**
      * @Route("/login", name="app_login", methods={"POST"})
      * @param IriConverterInterface $iriConverter

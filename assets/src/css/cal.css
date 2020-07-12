@@ -1,0 +1,32 @@
+.vuecal__event.male {background-color: rgba(253, 156, 66, 0.9);border: 1px solid rgb(233, 136, 46);color: #fff;}
+.vuecal__event.female {background-color: rgba(255, 102, 102, 0.9);border: 1px solid rgb(235, 82, 82);color: #fff;}
+
+.vuecal__event {cursor: pointer;}
+
+.vuecal__event-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 4px 0 8px;
+}
+
+.vuecal__event-time {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.vuecal__event-content {
+    font-style: italic;
+}
+
+.vuecal--month-view .vuecal__cell {height: 200px;}
+
+.vuecal--month-view .vuecal__cell-content {
+    justify-content: flex-start;
+    height: 100%;
+    align-items: flex-end;
+}
+
+.vuecal--month-view .vuecal__cell-date {padding: 4px;}
+.vuecal--month-view .vuecal__no-event {display: none;}
